@@ -40,7 +40,7 @@ import sys
 
 import pandas as pd
 import requests
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 
 
 def add_keyboard_interrupt(func):
@@ -231,5 +231,5 @@ def create_thumbnail(size=(128, 128)):
             new_filename = image_path.parent.joinpath(
                 '{0}-thumbnail{1}'.format(image_path.stem, image_path.suffix))
             image.convert('RGB').save(new_filename)
-        except:
+        except UnidentifiedImageError:
             pass
