@@ -10,10 +10,10 @@ We will do practices on following areas:
 - exploratory data analysis
 - parallel programming
 
-For parallel programming, you have two tasks. We will download random images from [Unsplash](https://unsplash.com/), and create thumbnail images.
+For parallel programming, you have two tasks. 
 
-1. Download images from internet
-2. Resize the images you download to thumbnails.
+1. Download images from internet from [Unsplash](https://unsplash.com/)
+2. Apply some image processing operations to the images.
 
 For comparison, we already implemented the serial process for both of these tasks. Once the notebook runs, we will be measuring processing time of the cell.
 

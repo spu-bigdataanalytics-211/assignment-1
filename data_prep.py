@@ -225,11 +225,17 @@ def create_thumbnail(size=(128, 128)):
         try:
             # create thumbnail
             image = Image.open(image_path.absolute())
-            image.thumbnail(size)
+            image.transpose(Image.FLIP_LEFT_RIGHT)
+            image.rotate(90)
+            image.rotate(270)
+            image.resize((400,400))
+            image.convert('L')
+            image.convert('RGB')
+            image.thumbnail((128,128))
 
-            # save thumbnail
-            new_filename = image_path.parent.joinpath(
-                '{0}-thumbnail{1}'.format(image_path.stem, image_path.suffix))
-            image.convert('RGB').save(new_filename)
+            # # save thumbnail
+            # new_filename = image_path.parent.joinpath(
+            #     '{0}-thumbnail{1}'.format(image_path.stem, image_path.suffix))
+            # image.save(new_filename)
         except UnidentifiedImageError:
             pass
