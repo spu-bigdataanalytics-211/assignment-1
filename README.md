@@ -40,7 +40,15 @@ get_images_df()
 
 # get images as list of dictionaries.
 get_images_list()
+```
 
+You can also create an images dataset by downloading images.
+
+``` py
+from data_prep import download_images
+
+# downloads to data/ images folder.
+download_images(quality='raw')
 ```
 
 ### Creating a Developer Account in Unsplash 
