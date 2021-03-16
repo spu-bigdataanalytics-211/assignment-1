@@ -127,3 +127,15 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# == assignment related ignores ==
+# data files but not folder
+data/**/*.*
+!data/**/*.gitkeep
+
+# config
+config.ini
+
+# temporary works or solutions
+Untitled*
+*Solution*.ipynb
