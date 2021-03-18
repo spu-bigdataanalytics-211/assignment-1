@@ -10,7 +10,7 @@ Avalable functions:
 - get_images_df
 - download_unsplash_json
 - download_images
-- create_thumbnail
+- do_image_processing
 
 Usage:
 
@@ -27,7 +27,7 @@ Download images to data/ images folder.
 >>> data_prep.download_images()
 
 Create thumbnail images from existing images in data/ images folder.
->>> data_prep.create_thumbnail()
+>>> data_prep.do_image_processing()
 
 """
 import configparser
@@ -139,7 +139,8 @@ def get_images_df():
 
 def download_unsplash_json():
     """
-    Downloads images meta information from unsplash website as JSON.
+    Downloads images meta information from unsplash website
+    as JSON with serial programming..
     """
     images_list = []
 
@@ -185,10 +186,49 @@ def download_unsplash_json():
             json.dump(images_list, writer, indent=4)
 
 
+def single_download_image(url, image_path):
+    """
+    Downloads given url image to computer.
+
+    Parameters:
+    url : 
+        The web link to download the image from.
+    image_path: 
+        Place to save downloaded image.
+    """
+    response = requests.get(url, stream=True)
+    if response.status_code == 200:
+        with open(image_path, 'wb+') as f:
+            f.write(response.content)
+
+
+def single_image_processing(filepath):
+    """
+    Do single image processing actions on given image file.
+    """
+    Image.MAX_IMAGE_PIXELS = None
+    try:
+        # open file
+        image = Image.open(filepath)
+
+        # image processing operations
+        image.transpose(Image.FLIP_LEFT_RIGHT)
+        image.rotate(90)
+        image.rotate(270)
+        image.resize((400, 400))
+        image.convert('L')
+        image.convert('RGB')
+        image.thumbnail((128, 128))
+
+    except UnidentifiedImageError:
+        pass
+
+
 @add_keyboard_interrupt
 def download_images(quality='regular'):
     """
-    Downloads images from given image quality.
+    Downloads images from given image quality with
+    serial programming.
 
     Parameters:
     quality : Options are raw | full | regular | small | thumb
@@ -204,38 +244,18 @@ def download_images(quality='regular'):
         url_quality = image['urls'][quality]
         image_path = pathlib.Path(f'data/images/{id}-{quality}.jpg')
 
-        # download images -  this is where downloading happens
-        response = requests.get(url_quality, stream=True)
-        if response.status_code == 200:
-            with open(image_path, 'wb+') as f:
-                f.write(response.content)
+        # download and save image
+        single_download_image(url_quality, image_path)
 
 
 @add_keyboard_interrupt
-def do_image_processing(size=(128, 128)):
+def do_image_processing():
     """
-    Applies some image processing operations to given
-    list of files.
+    Applies image processing operations to given 
+    list of files with serial programming.
     """
     images_path_list = list(pathlib.Path(
-        f'data/images').glob('**/*[!thumbnail].jpg'))
-    Image.MAX_IMAGE_PIXELS = None
+        f'data/images').glob('**/*.jpg'))
 
     for image_path in progressbar(it=images_path_list, prefix='Processing '):
-        try:
-            # create thumbnail
-            image = Image.open(image_path.absolute())
-            image.transpose(Image.FLIP_LEFT_RIGHT)
-            image.rotate(90)
-            image.rotate(270)
-            image.resize((400, 400))
-            image.convert('L')
-            image.convert('RGB')
-            image.thumbnail((128, 128))
-
-            # # save thumbnail
-            # new_filename = image_path.parent.joinpath(
-            #     '{0}-thumbnail{1}'.format(image_path.stem, image_path.suffix))
-            # image.save(new_filename)
-        except UnidentifiedImageError:
-            pass
+        single_image_processing(image_path.absolute())
