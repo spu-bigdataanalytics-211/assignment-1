@@ -17,6 +17,12 @@ For parallel programming, you have two tasks.
 
 For comparison, we already implemented the serial process for both of these tasks. Once the notebook runs, we will be measuring processing time of the cell.
 
+You can do parallel programming with python using following packages that are available within standard library. There are other packages that you can download via pip to achieve parallelism, but, for this assignment, following packages may just be sufficient.
+
+- [multiprocessing](https://docs.python.org/3.8/library/multiprocessing.html)
+- [threading](https://docs.python.org/3.8/library/threading.html)
+- [concurrent.futures](https://docs.python.org/3.8/library/concurrent.futures.html)
+
 ## Dataset
 
 Random images meta information from [Unsplash](https://unsplash.com/). 
