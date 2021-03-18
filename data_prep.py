@@ -137,32 +137,6 @@ def get_images_df():
     return pd.DataFrame(images_list)
 
 
-@add_keyboard_interrupt
-def download_images(quality='regular'):
-    """
-    Downloads images from given image quality.
-
-    Parameters:
-    quality : Options are raw | full | regular | small | thumb
-
-    For more information about quality, check unsplash documentation at
-    https://unsplash.com/documentation#example-image-use
-    """
-    images_list = get_images_list()
-
-    for image in progressbar(it=images_list, prefix='Downloading '):
-        # build necessary information
-        id = image['id']
-        url_quality = image['urls'][quality]
-        image_path = pathlib.Path(f'data/images/{id}-{quality}.jpg')
-
-        # download images -  this is where downloading happens
-        response = requests.get(url_quality, stream=True)
-        if response.status_code == 200:
-            with open(image_path, 'wb+') as f:
-                f.write(response.content)
-
-
 def download_unsplash_json():
     """
     Downloads images meta information from unsplash website as JSON.
@@ -212,10 +186,36 @@ def download_unsplash_json():
 
 
 @add_keyboard_interrupt
-def create_thumbnail(size=(128, 128)):
+def download_images(quality='regular'):
     """
-    Create resized version of the image path given, with the same name 
-    extended with _thumbnail.
+    Downloads images from given image quality.
+
+    Parameters:
+    quality : Options are raw | full | regular | small | thumb
+
+    For more information about quality, check unsplash documentation at
+    https://unsplash.com/documentation#example-image-use
+    """
+    images_list = get_images_list()
+
+    for image in progressbar(it=images_list, prefix='Downloading '):
+        # build necessary information
+        id = image['id']
+        url_quality = image['urls'][quality]
+        image_path = pathlib.Path(f'data/images/{id}-{quality}.jpg')
+
+        # download images -  this is where downloading happens
+        response = requests.get(url_quality, stream=True)
+        if response.status_code == 200:
+            with open(image_path, 'wb+') as f:
+                f.write(response.content)
+
+
+@add_keyboard_interrupt
+def do_image_processing(size=(128, 128)):
+    """
+    Applies some image processing operations to given
+    list of files.
     """
     images_path_list = list(pathlib.Path(
         f'data/images').glob('**/*[!thumbnail].jpg'))
@@ -228,10 +228,10 @@ def create_thumbnail(size=(128, 128)):
             image.transpose(Image.FLIP_LEFT_RIGHT)
             image.rotate(90)
             image.rotate(270)
-            image.resize((400,400))
+            image.resize((400, 400))
             image.convert('L')
             image.convert('RGB')
-            image.thumbnail((128,128))
+            image.thumbnail((128, 128))
 
             # # save thumbnail
             # new_filename = image_path.parent.joinpath(
