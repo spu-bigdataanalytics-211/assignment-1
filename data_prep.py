@@ -196,10 +196,15 @@ def single_download_image(url, image_path):
     image_path: 
         Place to save downloaded image.
     """
-    response = requests.get(url, stream=True)
-    if response.status_code == 200:
-        with open(image_path, 'wb+') as f:
-            f.write(response.content)
+    try:
+        response = requests.get(url, stream=True)
+        if response.status_code == 200:
+            with open(image_path, 'wb+') as f:
+                f.write(response.content)
+    except:
+        pass
+
+    return image_path
 
 
 def single_image_processing(filepath):
